@@ -2,3 +2,4 @@
 *.iml
 *.xml
 user_movie_rating.npy
+.vscode/*
