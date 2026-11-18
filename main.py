@@ -1,6 +1,8 @@
 import numpy as np
 import scipy as sp
 import argparse
+from itertools import combinations
+from tqdm import tqdm
 
 def read_data(file_path, matrix_type='coo'):
     #load data into np.array
@@ -33,9 +35,7 @@ def read_data(file_path, matrix_type='coo'):
     #sparse_matrix = lil.tocoo()
     return sparse_matrix
 
-from itertools import combinations
-import numpy as np
-from tqdm import tqdm
+
 def compute_minhash_signatures(matrix, num_hashes, seed=42):
     rng = np.random.default_rng(seed)
     num_users, num_items = matrix.shape
@@ -52,6 +52,7 @@ def compute_minhash_signatures(matrix, num_hashes, seed=42):
         hashes = (a * item_indices + b) % prime
         signatures[:, user] = np.min(hashes, axis=1)
     return signatures.astype(np.int64)
+
 
 def lsh(signatures, num_bands, rows_per_band):
     num_hashes, num_users = signatures.shape
@@ -75,6 +76,8 @@ def lsh(signatures, num_bands, rows_per_band):
                 candidate_pairs.update(combinations(users, 2))
 
     return candidate_pairs
+
+
 def verify_candidates(csr_mat, candidate_pairs, threshold=0.5):
     true_similar_pairs = []
 
@@ -88,10 +91,11 @@ def verify_candidates(csr_mat, candidate_pairs, threshold=0.5):
 
         if union > 0:
             jaccard = intersection / union
-            if jaccard >= threshold:
+            if jaccard > threshold:
                 true_similar_pairs.append((u1, u2, jaccard))
 
     return true_similar_pairs
+
 
 def main():
     # Load the data
@@ -116,6 +120,7 @@ def main():
     print("True similar pairs (user1, user2, jaccard_similarity):")
     for pair in true_similar_pairs:
         print(pair)
+
 
 if __name__ == '__main__':
     main()
