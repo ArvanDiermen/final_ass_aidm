@@ -1,3 +1,5 @@
+from fileinput import close
+
 import numpy as np
 import scipy as sp
 import argparse
@@ -93,8 +95,15 @@ def verify_candidates(csr_mat, candidate_pairs, threshold=0.5):
             jaccard = intersection / union
             if jaccard > threshold:
                 true_similar_pairs.append((u1, u2, jaccard))
+                write_results(pair=(u1, u2))
 
     return true_similar_pairs
+
+
+def write_results(pair):
+    with open("results.txt", "a") as f:
+        f.write(str(pair[0])+','+str(pair[1])+'\n')
+    f.close()
 
 
 def main():
