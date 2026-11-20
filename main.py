@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import argparse
+import time
 
 def read_data(file_path, matrix_type='coo'):
     #load data into np.array
