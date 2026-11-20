@@ -122,9 +122,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("seed", type=int, help="random seed")
     # optional arguments, so we can try different parameters without editing the code
-    parser.add_argument("--bands", type=int, default=15, help="number of bands (b)")
-    parser.add_argument("--rows", type=int, default=7, help="rows per band (r)")
-    parser.add_argument("--max_bucket", type=int, default=50, help="skip buckets bigger than this")
+    parser.add_argument("--bands", type=int, default=25, help="number of bands (b)")
+    parser.add_argument("--rows", type=int, default=6, help="rows per band (r)")
+    parser.add_argument("--max_bucket", type=int, default=200, help="skip buckets bigger than this")
     args = parser.parse_args()
 
     # one random number generator for the whole program, so the same seed gives the same result
