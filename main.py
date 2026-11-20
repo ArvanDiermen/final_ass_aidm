@@ -120,6 +120,10 @@ def main():
     #read the random seed from the command line (required by the assignment)
     parser = argparse.ArgumentParser()
     parser.add_argument("seed", type=int, help="random seed")
+    # optional arguments, so we can try different parameters without editing the code
+    parser.add_argument("--bands", type=int, default=15, help="number of bands (b)")
+    parser.add_argument("--rows", type=int, default=7, help="rows per band (r)")
+    parser.add_argument("--max_bucket", type=int, default=50, help="skip buckets bigger than this")
     args = parser.parse_args()
 
     # one random number generator for the whole program, so the same seed gives the same result
@@ -135,16 +139,16 @@ def main():
     print(f"Data loaded: {time.time() - t0:.0f}s")
 
     # parameters (temporary values, we tune them later) 
-    num_hashes = 100                         
-    num_bands = 20                            
-    rows_per_band = num_hashes // num_bands  
+    num_bands = args.bands
+    rows_per_band = args.rows
+    num_hashes = num_bands * rows_per_band 
 
     #compute the minhash signatures (one column per user)
     signatures = compute_minhash_signatures(csr_mat, num_hashes, rng)
     print(f"Signatures done: {time.time() - t0:.0f}s")
 
     # LSH banding, users that share a bucket in some band become candidate pairs
-    candidate_pairs = lsh(signatures, num_bands, rows_per_band, rng)
+    candidate_pairs = lsh(signatures, num_bands, rows_per_band, rng, max_bucket_size=args.max_bucket)
     print(f"Candidates: {len(candidate_pairs)}  ({time.time() - t0:.0f}s)")
 
     #check the candidates with the real Jaccard similarity,
